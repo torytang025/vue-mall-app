@@ -7,68 +7,17 @@
         </div>
       </template></nav-bar
     >
-    <home-swiper :banners="banners"></home-swiper>
-    <home-recommends :recommends="recommends"></home-recommends>
-    <home-feature-view></home-feature-view>
-    <tab-control
-      :titles="['流行', '新款', '精选']"
-      class="tab-control"
-      @tabClick="tabClick"
-    ></tab-control>
-    <goods-list :goods="showGoods" class="goods-list"></goods-list>
-    <ui>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ui>
+    <scroll class="content">
+      <home-swiper :banners="banners"></home-swiper>
+      <home-recommends :recommends="recommends"></home-recommends>
+      <home-feature-view></home-feature-view>
+      <tab-control
+        :titles="['流行', '新款', '精选']"
+        class="tab-control"
+        @tabClick="tabClick"
+      ></tab-control>
+      <goods-list :goods="showGoods" class="goods-list"></goods-list>
+    </scroll>
   </div>
 </template>
 
@@ -80,6 +29,7 @@ import HomeFeatureView from "./childComp/HomeFeatureView";
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
+import Scroll from "components/common/scroll/Scroll";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
@@ -108,7 +58,8 @@ export default {
     HomeRecommends,
     HomeFeatureView,
     TabControl,
-    GoodsList
+    GoodsList,
+    Scroll
   },
   created() {
     // 请求多个数据
@@ -158,9 +109,11 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #home {
   padding-top: 44px;
+  position: relative;
+  height: 100vh;
 }
 
 .home-nav {
@@ -184,5 +137,13 @@ export default {
 
 .goods-list {
   z-index: -1;
+}
+
+.content {
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
 }
 </style>

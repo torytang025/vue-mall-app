@@ -1,13 +1,13 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="img-item" />
-    <div class="goods-info">
-      <a href="goodsItem.link">
+    <a href="goodsItem.link">
+      <img :src="goodsItem.show.img" alt="img-item" />
+      <div class="goods-info">
         <p>{{ goodsItem.title }}</p>
         <span class="price">{{ goodsItem.price }}</span>
         <span class="collect">{{ goodsItem.cfav }}</span>
-      </a>
-    </div>
+      </div>
+    </a>
   </div>
 </template>
 
