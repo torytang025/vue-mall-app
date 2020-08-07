@@ -1,12 +1,17 @@
 <template>
   <div id="detail">
     <detail-nav-bar class="detail-nav"></detail-nav-bar>
-    <scroll class="content" ref="scroll">
-      <detail-swiper :top-images="topImages"></detail-swiper>
-      <Detail-base-info :goods="goods"></Detail-base-info>
-      <detail-shop-info :shop="shop"></detail-shop-info>
-      <detail-goods-info :detail-info="detailInfo"></detail-goods-info>
-      <detail-param-info :param-info="paramInfo"></detail-param-info>
+    <scroll class="detail-content" ref="scroll">
+      <detail-swiper :top-images="topImages" />
+      <Detail-base-info :goods="goods" />
+      <detail-shop-info :shop="shop" />
+      <detail-goods-info
+        :detail-info="detailInfo"
+        @detailImageLoad="detailImageLoad"
+      />
+      <detail-param-info :param-info="paramInfo" />
+      <detail-comment-info :comment-info="commentInfo" />
+      <goods-list :goods="recommends" />
     </scroll>
   </div>
 </template>
@@ -18,12 +23,20 @@ import DetailBaseInfo from "./childDetail/DetailBaseInfo";
 import DetailShopInfo from "./childDetail/DetailShopInfo";
 import DetailGoodsInfo from "./childDetail/DetailGoodsInfo";
 import DetailParamInfo from "./childDetail/DetailParamInfo";
+import DetailCommentInfo from "./childDetail/DetailCommentInfo";
 
 import Scroll from "components/common/scroll/Scroll";
+import GoodsList from "components/content/goods/GoodsList";
 
-import { getDetail, Goods, Shop, GoodsParam } from "network/detail";
+import {
+  getDetail,
+  getRecommend,
+  Goods,
+  Shop,
+  GoodsParam
+} from "network/detail";
 
-import { debounce } from "common/utils";
+// import { debounce } from "common/utils";
 
 export default {
   name: "Detail",
@@ -31,10 +44,12 @@ export default {
     DetailNavBar,
     DetailSwiper,
     DetailBaseInfo,
-    Scroll,
     DetailShopInfo,
     DetailGoodsInfo,
-    DetailParamInfo
+    DetailParamInfo,
+    DetailCommentInfo,
+    GoodsList,
+    Scroll
   },
   data() {
     return {
@@ -43,12 +58,15 @@ export default {
       goods: {},
       shop: {},
       detailInfo: {},
-      paramInfo: {}
+      paramInfo: {},
+      commentInfo: {},
+      recommends: []
     };
   },
-  methods: {},
   created() {
     this.iid = this.$route.params.iid;
+
+    // 请求详情数据
     getDetail(this.iid).then(res => {
       console.log(res);
       const data = res.result;
@@ -70,13 +88,21 @@ export default {
         data.itemParams.info,
         data.itemParams.rule
       );
+      // 获取评论信息
+      if (data.rate.cRate != 0) {
+        this.commentInfo = data.rate.list[0];
+      }
+    });
+
+    getRecommend().then(res => {
+      this.recommends = res.data.list;
     });
   },
-  mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 20);
-    this.$bus.$on("detailImageLoads", () => {
-      refresh();
-    });
+
+  methods: {
+    detailImageLoad() {
+      this.$refs.scroll.refresh();
+    }
   }
 };
 </script>
@@ -88,11 +114,20 @@ export default {
   z-index: 1;
   background-color: #fff;
 }
-.content {
-  position: absolute;
+
+.detail-nav {
+  position: relative;
+  z-index: 9;
+  background-color: #fff;
+}
+
+.detail-content {
+  /* position: absolute;
   top: 44px;
   bottom: 60px;
 
-  overflow: hidden;
+  overflow: hidden; */
+
+  height: calc(100% - 44px);
 }
 </style>

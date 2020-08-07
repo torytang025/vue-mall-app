@@ -109,13 +109,11 @@ export default {
     // 所有组件都有一个 $el属性：用于获取组件中的元素
   },
   activated() {
-    console.log(this.scrollY);
     this.$refs.scroll.scrollTo(0, this.scrollY);
     this.$refs.scroll.refresh();
   },
   deactivated() {
     this.scrollY = this.$refs.scroll.getScrollY();
-    console.log(this.scrollY);
   },
   methods: {
     /**

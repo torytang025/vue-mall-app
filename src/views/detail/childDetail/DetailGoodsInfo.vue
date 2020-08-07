@@ -1,5 +1,5 @@
 <template>
-  <div v-if="Object.keys(detailInfo).length !== 0" class="goods-info">
+  <div v-if="Object.keys(detailInfo).length !== 0" class="detail-goods-info">
     <div class="info-desc clear-fix">
       <div class="start"></div>
       <div class="desc">{{ detailInfo.desc }}</div>
@@ -23,21 +23,22 @@ export default {
   name: "DetailGoodsInfo",
   props: {
     detailInfo: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   methods: {
     detailImageLoad() {
-      this.$bus.$emit('detailImageLoads')
-    }
+      this.$emit("detailImageLoad");
+    },
   },
 };
 </script>
 
 <style scoped>
-.goods-info {
+.detail-goods-info {
   padding: 20px 0;
   border-bottom: 5px solid #f2f5f8;
+  background-color: white;
 }
 
 .info-desc {
@@ -63,7 +64,7 @@ export default {
 .info-desc .start::before,
 .info-desc .end::after {
   content: "";
-  position: absolute;
+  position: relative;
   width: 5px;
   height: 5px;
   background-color: #333;
