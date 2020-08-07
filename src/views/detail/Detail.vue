@@ -122,12 +122,10 @@ export default {
 }
 
 .detail-content {
-  /* position: absolute;
+  position: absolute;
   top: 44px;
   bottom: 60px;
 
-  overflow: hidden; */
-
-  height: calc(100% - 44px);
+  overflow: hidden;
 }
 </style>
