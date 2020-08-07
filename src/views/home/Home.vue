@@ -69,7 +69,8 @@ export default {
       currentTab: "pop",
       isShowBackTop: false,
       tabOffsetTop: 0,
-      isFixedTabBar: false
+      isFixedTabBar: false,
+      scrollY: 0
     };
   },
   computed: {
@@ -100,12 +101,21 @@ export default {
     // 对refresh进行防抖处理
     const refresh = debounce(this.$refs.scroll.refresh, 200);
     // 监听item中图片加载完成
-    this.$bus.$on("itemImageLoad", () => {
+    this.$bus.$on("goodsItemImageLoad", () => {
       refresh();
     });
 
     // 获取tabControl的offsetTop
     // 所有组件都有一个 $el属性：用于获取组件中的元素
+  },
+  activated() {
+    console.log(this.scrollY);
+    this.$refs.scroll.scrollTo(0, this.scrollY);
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    this.scrollY = this.$refs.scroll.getScrollY();
+    console.log(this.scrollY);
   },
   methods: {
     /**
@@ -135,6 +145,7 @@ export default {
       this.isShowBackTop = -position.y > 1000;
       this.isFixedTabBar = -position.y > this.tabOffsetTop;
     },
+    // 上拉加载更多
     loadMore() {
       this.getHomeGoods(this.currentTab);
     },
