@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     imgLoad() {
-      this.$bus.$emit("goodsItemImageLoad");
+      this.$bus.$emit("itemImgLoad");
     },
     itemClick() {
       this.$router.push("/detail/" + this.goodsItem.iid);

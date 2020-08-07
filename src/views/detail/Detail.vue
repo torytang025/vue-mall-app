@@ -1,7 +1,12 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav"></detail-nav-bar>
-    <scroll class="detail-content" ref="scroll">
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="nav" />
+    <scroll
+      class="detail-content"
+      ref="scroll"
+      :probe-type="3"
+      @scroll="contentScroll"
+    >
       <detail-swiper :top-images="topImages" />
       <Detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
@@ -9,9 +14,9 @@
         :detail-info="detailInfo"
         @detailImageLoad="detailImageLoad"
       />
-      <detail-param-info :param-info="paramInfo" />
-      <detail-comment-info :comment-info="commentInfo" />
-      <goods-list :goods="recommends" />
+      <detail-param-info :param-info="paramInfo" ref="params" />
+      <detail-comment-info :comment-info="commentInfo" ref="comment" />
+      <goods-list :goods="recommends" ref="recommend" />
     </scroll>
   </div>
 </template>
@@ -28,6 +33,8 @@ import DetailCommentInfo from "./childDetail/DetailCommentInfo";
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 
+import { itemListenerMixin } from "common/mixin";
+
 import {
   getDetail,
   getRecommend,
@@ -36,7 +43,7 @@ import {
   GoodsParam
 } from "network/detail";
 
-// import { debounce } from "common/utils";
+import { debounce } from "common/utils";
 
 export default {
   name: "Detail",
@@ -60,9 +67,13 @@ export default {
       detailInfo: {},
       paramInfo: {},
       commentInfo: {},
-      recommends: []
+      recommends: [],
+      detailTopYs: [],
+      getDetailTopY: null,
+      currentIndex: 0
     };
   },
+  mixins: [itemListenerMixin],
   created() {
     this.iid = this.$route.params.iid;
 
@@ -92,16 +103,66 @@ export default {
       if (data.rate.cRate != 0) {
         this.commentInfo = data.rate.list[0];
       }
-    });
 
+      // 第一次获取，值不对，this.$refs.params.$el.offsetTop还没有加载dom
+      // this.detailTopYs = [];
+      //   this.detailTopYs.push(0);
+      //   this.detailTopYs.push(this.$refs.params.$el.offsetTop);
+      //   this.detailTopYs.push(this.$refs.comment.$el.offsetTop);
+      //   this.detailTopYs.push(this.$refs.recommend.$el.offsetTop);
+
+      // 第二次获取
+      // 渲染完成后获取元素的位置信息
+      // this.$nextTick(() => {
+      //   // 根据最新的数据，对应的dom渲染完成，但是图片还没有加载完
+      //   // 所以第一次计算的高度中，图片不包含在内
+      //   this.detailTopYs = [];
+      //   this.detailTopYs.push(0);
+      //   this.detailTopYs.push(this.$refs.params.$el.offsetTop);
+      //   this.detailTopYs.push(this.$refs.comment.$el.offsetTop);
+      //   this.detailTopYs.push(this.$refs.recommend.$el.offsetTop);
+      //   console.log(this.detailTopYs);
+      // });
+    });
+    // 请求推荐数据
     getRecommend().then(res => {
       this.recommends = res.data.list;
     });
+    // 给getDetailTopY赋值一个防抖函数
+    this.getDetailTopY = debounce(() => {
+      this.detailTopYs = [];
+      this.detailTopYs.push(0);
+      this.detailTopYs.push(this.$refs.params.$el.offsetTop);
+      this.detailTopYs.push(this.$refs.comment.$el.offsetTop);
+      this.detailTopYs.push(this.$refs.recommend.$el.offsetTop);
+      // 推入一个无限大的数方便之后遍历
+      this.detailTopYs.push(Infinity);
+    });
   },
-
+  destroyed() {
+    // 取消监听全局itemImgLoad事件
+    this.$bus.$off("itemImgLoad", this.itemImgListener);
+  },
   methods: {
     detailImageLoad() {
-      this.$refs.scroll.refresh();
+      this.getDetailTopY();
+    },
+    titleClick(index) {
+      this.$refs.scroll.scrollTo(0, -this.detailTopYs[index], 500);
+    },
+    contentScroll(position) {
+      // 获取y值
+      const positionY = -position.y;
+      // positionY和组件的高度作对比
+      for (let i in this.detailTopYs) {
+        if (
+          this.currentIndex !== i &&
+          positionY > this.detailTopYs[i] &&
+          positionY < this.detailTopYs[i + 1]
+        ) {
+          this.$refs.nav.currentIndex = this.currentIndex;
+        }
+      }
     }
   }
 };

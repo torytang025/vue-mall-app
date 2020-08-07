@@ -53,7 +53,8 @@ import Scroll from "components/common/scroll/Scroll";
 import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
-import { debounce } from "common/utils";
+// import { debounce } from "common/utils";
+import { itemListenerMixin } from "common/mixin";
 
 export default {
   name: "Home",
@@ -64,19 +65,19 @@ export default {
       goods: {
         pop: { page: 1, list: [] },
         new: { page: 1, list: [] },
-        sell: { page: 1, list: [] }
+        sell: { page: 1, list: [] },
       },
       currentTab: "pop",
       isShowBackTop: false,
       tabOffsetTop: 0,
       isFixedTabBar: false,
-      scrollY: 0
+      scrollY: 0,
     };
   },
   computed: {
     showGoods() {
       return this.goods[this.currentTab].list;
-    }
+    },
   },
   components: {
     NavBar,
@@ -86,8 +87,9 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    BackTop
+    BackTop,
   },
+  mixins: [itemListenerMixin],
   created() {
     // 请求多个数据
     this.getHomeMultidata();
@@ -97,23 +99,16 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-  mounted() {
-    // 对refresh进行防抖处理
-    const refresh = debounce(this.$refs.scroll.refresh, 200);
-    // 监听item中图片加载完成
-    this.$bus.$on("goodsItemImageLoad", () => {
-      refresh();
-    });
-
-    // 获取tabControl的offsetTop
-    // 所有组件都有一个 $el属性：用于获取组件中的元素
-  },
+  mounted() {},
   activated() {
     this.$refs.scroll.scrollTo(0, this.scrollY);
     this.$refs.scroll.refresh();
   },
   deactivated() {
+    // 保存Y值
     this.scrollY = this.$refs.scroll.getScrollY();
+    // 取消监听全局itemImgLoad事件
+    this.$bus.$off("itemImgLoad", this.itemImgListener);
   },
   methods: {
     /**
@@ -155,21 +150,21 @@ export default {
      * 网络请求
      */
     getHomeMultidata() {
-      getHomeMultidata().then(res => {
+      getHomeMultidata().then((res) => {
         [this.banners, this.recommends] = [
           res.data.banner.list,
-          res.data.recommend.list
+          res.data.recommend.list,
         ];
       });
     },
     getHomeGoods(type) {
       const page = this.goods[type].page;
-      getHomeGoods(type, page).then(res => {
+      getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page++;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

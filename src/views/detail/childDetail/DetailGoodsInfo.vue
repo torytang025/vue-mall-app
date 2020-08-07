@@ -28,6 +28,7 @@ export default {
   },
   methods: {
     detailImageLoad() {
+      this.$bus.$emit("detailImageLoad");
       this.$emit("detailImageLoad");
     },
   },
