@@ -18,6 +18,8 @@
       <detail-comment-info :comment-info="commentInfo" ref="comment" />
       <goods-list :goods="recommends" ref="recommend" />
     </scroll>
+    <detail-bottom-bar @addCart="addToCart" />
+    <back-top @click.native="backTopClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -29,11 +31,12 @@ import DetailShopInfo from "./childDetail/DetailShopInfo";
 import DetailGoodsInfo from "./childDetail/DetailGoodsInfo";
 import DetailParamInfo from "./childDetail/DetailParamInfo";
 import DetailCommentInfo from "./childDetail/DetailCommentInfo";
+import DetailBottomBar from "./childDetail/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 
-import { itemListenerMixin } from "common/mixin";
+import { itemListenerMixin, backTopMixin } from "common/mixin";
 
 import {
   getDetail,
@@ -56,7 +59,8 @@ export default {
     DetailParamInfo,
     DetailCommentInfo,
     GoodsList,
-    Scroll
+    Scroll,
+    DetailBottomBar
   },
   data() {
     return {
@@ -73,7 +77,7 @@ export default {
       currentIndex: 0
     };
   },
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   created() {
     this.iid = this.$route.params.iid;
 
@@ -150,6 +154,7 @@ export default {
     titleClick(index) {
       this.$refs.scroll.scrollTo(0, -this.detailTopYs[index], 500);
     },
+    // 监听位置函数
     contentScroll(position) {
       // 获取y值
       const positionY = -position.y;
@@ -163,6 +168,24 @@ export default {
           this.$refs.nav.currentIndex = this.currentIndex;
         }
       }
+      // 通过混入的函数，判断是否显示回顶图标
+      this.listenShowBackTop(position);
+    },
+    // 监听添加购物车事件
+    addToCart() {
+      // 1. 获取购物车需要展示的信息
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.realPrice;
+      product.iid = this.iid;
+
+      // 2. 将商品添加到购物车
+      this.$store.dispatch({
+        type: "addCart",
+        item: product
+      });
     }
   }
 };

@@ -42,19 +42,18 @@
 </template>
 
 <script>
-import HomeSwiper from "./childComp/HomeSwiper";
-import HomeRecommends from "./childComp/HomeRecommends";
-import HomeFeatureView from "./childComp/HomeFeatureView";
+import HomeSwiper from "./childHome/HomeSwiper";
+import HomeRecommends from "./childHome/HomeRecommends";
+import HomeFeatureView from "./childHome/HomeFeatureView";
 
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
 import Scroll from "components/common/scroll/Scroll";
-import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 // import { debounce } from "common/utils";
-import { itemListenerMixin } from "common/mixin";
+import { itemListenerMixin, backTopMixin } from "common/mixin";
 
 export default {
   name: "Home",
@@ -68,7 +67,6 @@ export default {
         sell: { page: 1, list: [] },
       },
       currentTab: "pop",
-      isShowBackTop: false,
       tabOffsetTop: 0,
       isFixedTabBar: false,
       scrollY: 0,
@@ -87,9 +85,8 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    BackTop,
   },
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   created() {
     // 请求多个数据
     this.getHomeMultidata();
@@ -129,13 +126,10 @@ export default {
       // 当点击tabcontrl组件时，回到商品栏顶部
       this.$refs.scroll.scrollTo(0, -this.tabOffsetTop);
     },
-
-    backTopClick() {
-      this.$refs.scroll.scrollTo(0, 0, 300);
-    },
     // 监听滚动
     contentScroll(position) {
-      this.isShowBackTop = -position.y > 1000;
+      // 通过混入的函数，判断是否显示回顶图标
+      this.listenShowBackTop(position);
       this.isFixedTabBar = -position.y > this.tabOffsetTop;
     },
     // 上拉加载更多
