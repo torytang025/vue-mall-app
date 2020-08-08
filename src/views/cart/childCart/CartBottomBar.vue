@@ -9,7 +9,7 @@
       <span>全选</span>
     </div>
     <div class="total-price">合计：{{ totalPrice }}</div>
-    <div class="calculate">去计算（{{ checkLength }}）</div>
+    <div class="calculate" @click="calcClick">去计算（{{ checkLength }}）</div>
   </div>
 </template>
 
@@ -49,6 +49,14 @@ export default {
       this.$store.state.cartList.forEach(item => {
         item.checked = flag;
       });
+    },
+    calcClick() {
+      const isSelect = this.$store.state.cartList.some(item => {
+        return item.checked;
+      });
+      if (!isSelect) {
+        this.$toast.show("请选择一件商品", 2000);
+      }
     }
   }
 };
