@@ -132,6 +132,7 @@ export default {
     });
     // 请求推荐数据
     getRecommend().then(res => {
+      console.log(res.headers);
       this.recommends = res.data.list;
     });
     // 给getDetailTopY赋值一个防抖函数

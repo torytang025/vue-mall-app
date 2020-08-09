@@ -15,14 +15,20 @@ export function request(config) {
     },
     err => {
       console.log(err);
+      return Promise.reject(err);
     }
   );
 
   // 响应拦截器
-  instance.interceptors.response.use(res => {
-    // 拦截后需要将拦截下来处理成的结果返回
-    return res.data;
-  });
+  instance.interceptors.response.use(
+    res => {
+      // 拦截后需要将拦截下来处理成的结果返回,此处只返回响应的数据部分
+      return res.data;
+    },
+    err => {
+      return Promise.reject(err);
+    }
+  );
 
   return instance(config);
 }
