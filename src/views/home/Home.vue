@@ -171,6 +171,7 @@ export default {
 .home-nav {
   background-color: var(--color-tint);
   color: white;
+  font-weight: 700;
 }
 
 .goods-list {

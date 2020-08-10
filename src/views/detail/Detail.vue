@@ -45,7 +45,7 @@ import {
   getRecommend,
   Goods,
   Shop,
-  GoodsParam
+  GoodsParam,
 } from "network/detail";
 
 import { debounce } from "common/utils";
@@ -62,7 +62,7 @@ export default {
     DetailCommentInfo,
     GoodsList,
     Scroll,
-    DetailBottomBar
+    DetailBottomBar,
   },
   data() {
     return {
@@ -76,7 +76,7 @@ export default {
       recommends: [],
       detailTopYs: [],
       getDetailTopY: null,
-      currentIndex: 0
+      currentIndex: 0,
     };
   },
   mixins: [itemListenerMixin, backTopMixin],
@@ -84,7 +84,7 @@ export default {
     this.iid = this.$route.params.iid;
 
     // 请求详情数据
-    getDetail(this.iid).then(res => {
+    getDetail(this.iid).then((res) => {
       console.log(res);
       const data = res.result;
       // 获取顶部轮播图的图片
@@ -131,7 +131,7 @@ export default {
       // });
     });
     // 请求推荐数据
-    getRecommend().then(res => {
+    getRecommend().then((res) => {
       console.log(res.headers);
       this.recommends = res.data.list;
     });
@@ -187,12 +187,12 @@ export default {
 
       // 2. 将商品添加到购物车
       this.addCart({
-        item: product
-      }).then(res => {
+        item: product,
+      }).then((res) => {
         this.$toast.show(res, 2000);
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
