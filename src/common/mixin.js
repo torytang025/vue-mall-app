@@ -9,10 +9,15 @@ export const itemListenerMixin = {
   },
   mounted() {
     let newRefresh = debounce(this.$refs.scroll.refresh, 100);
+    // 将函数保存到data里方便之后取消
     this.itemImgListener = () => {
       newRefresh();
     };
     this.$bus.$on("itemImgLoad", this.itemImgListener);
+  },
+  deactivated() {
+    // 取消监听全局itemImgLoad事件
+    this.$bus.$off("itemImgLoad", this.itemImgListener);
   }
 };
 
@@ -29,8 +34,8 @@ export const backTopMixin = {
     backTopClick() {
       this.$refs.scroll.scrollTo(0, 0, 300);
     },
-    listenShowBackTop(position) {
-      this.isShowBackTop = -position.y > 1000;
+    listenShowBackTop(position, showPosition = 1000) {
+      this.isShowBackTop = -position.y > showPosition;
     }
   }
 };

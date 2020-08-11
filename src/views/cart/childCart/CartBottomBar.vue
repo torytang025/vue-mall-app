@@ -19,14 +19,14 @@ import CheckButton from "components/content/checkButton/CheckButton";
 export default {
   name: "CartBottomBar",
   components: {
-    CheckButton
+    CheckButton,
   },
   computed: {
     totalPrice() {
       return (
         "￥" +
         this.$store.state.cartList
-          .filter(item => {
+          .filter((item) => {
             return item.checked;
           })
           .reduce((preValue, item) => {
@@ -36,29 +36,29 @@ export default {
       );
     },
     checkLength() {
-      return this.$store.state.cartList.filter(item => item.checked).length;
+      return this.$store.state.cartList.filter((item) => item.checked).length;
     },
     isSelectAll() {
       if (this.$store.state.cartList.length === 0) return false;
-      return this.$store.state.cartList.every(item => item.checked);
-    }
+      return this.$store.state.cartList.every((item) => item.checked);
+    },
   },
   methods: {
     selectAllClick() {
       let flag = !this.isSelectAll;
-      this.$store.state.cartList.forEach(item => {
+      this.$store.state.cartList.forEach((item) => {
         item.checked = flag;
       });
     },
     calcClick() {
-      const isSelect = this.$store.state.cartList.some(item => {
+      const isSelect = this.$store.state.cartList.some((item) => {
         return item.checked;
       });
       if (!isSelect) {
         this.$toast.show("请选择一件商品", 2000);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -97,5 +97,6 @@ export default {
   background-color: var(--color-tint);
   color: white;
   text-align: center;
+  padding-left: 5px;
 }
 </style>

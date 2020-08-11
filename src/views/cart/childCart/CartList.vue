@@ -18,16 +18,16 @@ import CartListItem from "./CartListItem";
 export default {
   name: "CartList",
   computed: {
-    ...mapGetters(["cartList"])
+    ...mapGetters(["cartList"]),
   },
   components: {
     Scroll,
-    CartListItem
+    CartListItem,
   },
   activated() {
     // 每次进入页面之后刷新可滚动高度
     this.$refs.scroll.refresh();
-  }
+  },
 };
 </script>
 

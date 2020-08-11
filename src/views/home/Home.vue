@@ -96,7 +96,6 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-  mounted() {},
   activated() {
     this.$refs.scroll.scrollTo(0, this.scrollY);
     this.$refs.scroll.refresh();
@@ -104,8 +103,6 @@ export default {
   deactivated() {
     // 保存Y值
     this.scrollY = this.$refs.scroll.getScrollY();
-    // 取消监听全局itemImgLoad事件
-    this.$bus.$off("itemImgLoad", this.itemImgListener);
   },
   methods: {
     /**
@@ -122,6 +119,7 @@ export default {
         case 2:
           this.currentTab = "sell";
       }
+      // 同意两个栏的当前高亮
       this.$refs.tabControlInner.currentIndex = this.$refs.tabControlOuter.currentIndex = index;
       // 当点击tabcontrl组件时，回到商品栏顶部
       this.$refs.scroll.scrollTo(0, -this.tabOffsetTop);
