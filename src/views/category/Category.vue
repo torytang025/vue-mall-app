@@ -93,7 +93,6 @@ export default {
   methods: {
     getCategory() {
       getCategory().then((res) => {
-        console.log(res);
         // 获取分类数据
         this.categories = res.data.category.list;
         // 初始化每个类别的子数据
@@ -116,11 +115,8 @@ export default {
       this.currentIndex = index;
       const maitKey = this.categories[index].maitKey;
       getSubcategory(maitKey).then((res) => {
-        console.log(res);
         this.categoryData[index].subCategories = res.data;
-        console.log(this.categoryData);
         this.categoryData = { ...this.categoryData };
-        console.log(this.categoryData);
 
         // 获取不同类别商品
         this.getCategoryDetail("pop");
@@ -134,7 +130,6 @@ export default {
       const miniWallkey = this.categories[this.currentIndex].miniWallkey;
       // 发送请求
       getCategoryDetail(miniWallkey, type).then((res) => {
-        console.log(res);
         this.categoryData[this.currentIndex].categoryDetail[type] = res;
         this.categoryData = { ...this.categoryData };
       });
