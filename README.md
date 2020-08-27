@@ -1,6 +1,6 @@
 # Vue.js 开发移动端购物 WebApp
 
-该项目是以 **Vue.js （2.x）**为框架，加上Vue生态全家桶而开发出的、具备基本购物APP功能的移动端购物 WebApp。
+该项目是以 Vue.js （2.x）为框架，加上Vue生态全家桶而开发出的、具备基本购物APP功能的移动端购物 WebApp。
 
 ![图片预览](./public/image-1.png)
 
