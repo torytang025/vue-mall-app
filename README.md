@@ -2,8 +2,6 @@
 
 该项目是以 **Vue.js （2.x）**为框架，加上Vue生态全家桶而开发出的、具备基本购物APP功能的移动端购物 WebApp。
 
-👉 学习自coderwhy老师，学习地址: https://www.bilibili.com/video/BV15741177Eh
-
 ![图片预览](./public/image-1.png)
 
 ## 个人收获
